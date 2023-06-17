@@ -11,9 +11,7 @@ reddit = praw.Reddit(client_id=config['CLIENT_ID'],
 subredit_name = 'Switzerland'
 posts = reddit.subreddit(subredit_name).hot(limit=10)
 
-title = {}
-for i, posts in enumerate(posts):
-    title[subredit_name + '_' + str(i+1)] = posts.title
+title = {subredit_name + '_' + str(i+1): post.title for i, post in enumerate(posts)}
     
 print(title)
 
