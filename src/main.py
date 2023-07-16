@@ -9,7 +9,10 @@ reddit = Reddit(client_id=config['CLIENT_ID'],
                 redirect_url='http://localhost:a8080',
                 user_agent=config['USER_AGENT'])
 
-subreddit_names = ['Thailand', 'malaysia', 'japan',]
+with open('../content/subreddits.txt') as f:
+    content = f.read()
+    subreddit_names = content.split('\n')
+    
 data = []
 
 for subreddit_name in subreddit_names:
@@ -27,7 +30,6 @@ for subreddit_name in subreddit_names:
     
     data.append(subreddit_dict)
   
-print(data)  
 # posts = reddit.subreddit(subredit_name).hot(limit=10)
 
 # title = {subredit_name + '_' + str(i+1): post.title for i, post in enumerate(posts)}
