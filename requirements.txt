@@ -2,3 +2,5 @@ praw
 python-dotenv
 pandas
 google-cloud-storage
+pyarrow
+fastparquet

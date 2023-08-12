@@ -12,11 +12,8 @@ class RedditLoader():
         load_dotenv()
         self.reddit = Reddit(client_id=os.getenv('CLIENT_ID'),
                         client_secret=os.getenv('CLIENT_SECRET'),
-                        redirect_url='http://localhost:a8080',
                         user_agent=os.getenv('USER_AGENT'))
         
-
-            
     def get_subreddit(self, subreddit_name):
         """Creates subreddit instance to get submissions from it
 
