@@ -31,6 +31,8 @@ for i, subreddit_name in enumerate(subreddit_names):
     else:
         fp.write(FILEPATH, pd.DataFrame(data), compression = 'GZIP', append=True)
         
+    print(f'Subreddit {subreddit_name} is done!')
+        
 #full_data = pd.DataFrame(data)
 # save to parquet file in a format 'reddit-comments-YYYY-MM-DD'
 #full_data.to_parquet('../content/' + FILENAME)
