@@ -1,6 +1,9 @@
+functions-framework==3.*
 praw
 python-dotenv
 pandas
 google-cloud-storage
+google-cloud-bigquery
 pyarrow
 fastparquet
+PyYAML

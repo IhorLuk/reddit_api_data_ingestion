@@ -1,15 +1,17 @@
 from reddit import RedditLoader
 from storage import GoogleStorageLoader
+from data_warehouse import BigQueryTable
 from datetime import date, timedelta
 import pandas as pd
 import fastparquet as fp
 
 # make time limits - we need only yesterday's posts
 START_DATE = date.today() - timedelta(days = 1)
-END_DATE = date.today()
 FILENAME = f'reddit-comments-{START_DATE}.parquet'
+FILEPATH = f'../content/{FILENAME}'
 BUCKET_NAME = "reddit-api"
-DESTINATION = f"reddit-comments-{START_DATE}.parquet"
+DATASET_NAME='reddit_api_raw_data'
+TABLE_NAME='raw_data'
 
 # get subreddits name from a local txt file
 with open('../content/subreddits.txt') as f:
@@ -25,9 +27,9 @@ for i, subreddit_name in enumerate(subreddit_names):
 
     # create new parquet file if not exists or append to existing
     if i == 0:
-        fp.write('../content/test.parquet', pd.DataFrame(data), compression = 'GZIP')
+        fp.write(FILEPATH, pd.DataFrame(data), compression = 'GZIP')
     else:
-        fp.write('../content/test.parquet', pd.DataFrame(data), compression = 'GZIP', append=True)
+        fp.write(FILEPATH, pd.DataFrame(data), compression = 'GZIP', append=True)
         
 #full_data = pd.DataFrame(data)
 # save to parquet file in a format 'reddit-comments-YYYY-MM-DD'
@@ -36,5 +38,12 @@ for i, subreddit_name in enumerate(subreddit_names):
 # upload to the storage
 GoogleStorage = GoogleStorageLoader()
 GoogleStorage.upload_to_bucket(bucket_name=BUCKET_NAME,
-                               destination=DESTINATION,
-                               source_file='../content/' + FILENAME)
+                               destination=FILENAME,
+                               source_file=FILEPATH)
+
+# upload from storage parquet file to the BigQuery table
+BigQueryTableLoader = BigQueryTable(dataset_name=DATASET_NAME, table_name=TABLE_NAME)
+# check if table exists
+BigQueryTableLoader.create_table_if_not_exists(config_path='../schemas.yml')
+# load file from cloud storage
+BigQueryTableLoader.load_from_cloud_storage(uri=f'gs://{BUCKET_NAME}/{FILENAME}')
